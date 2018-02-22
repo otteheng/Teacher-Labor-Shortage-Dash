@@ -3,17 +3,27 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
+import plotly.plotly as py
 import pandas as pd
 from dash.dependencies import Input, Output, State
+import flask
+import os
+from random import randint
 
 # Saved on Github
 excel = pd.read_excel('https://github.com/otteheng/Teacher-Labor-Shortage-Dash/blob/master/Data/Aggregated%20Number%20of%20Degrees%20in%20Education%20(Reshaped%20long%20long)%20(Renamed).xlsx?raw=true')
 
-app = dash.Dash()
+
+# Setup the app
+# Make sure not to change this file name or the variable names below,
+# the template is configured to execute 'server' on 'app.py'
+server = flask.Flask(__name__)
+server.secret_key = os.environ.get('secret_key', str(randint(0, 1000000)))
+app = dash.Dash(__name__, server=server)
 
 app.css.append_css({"external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"})
 
-df = excel2
+df = excel
 
 state = df['state_long'].unique()
 available_indicators = ['State Total', 'Bachelor Total', 'Masters Total', 'PhD Total', 'Elementary Total', 'SPED Total',
@@ -125,5 +135,6 @@ def update_time_series(state_id, indicator_ids):
     }
 
 
+# Run the Dash app
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.server.run(debug=True, threaded=True)
