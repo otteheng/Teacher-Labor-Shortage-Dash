@@ -26,7 +26,7 @@ app.css.append_css({"external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
 df = excel
 
 state = df['state_long'].unique()
-available_indicators = ['State Total', 'Bachelor Total', 'Masters Total', 'PhD Total', 'Elementary Total', 'SPED Total',
+available_indicators = ['National Total', 'State Total', 'Bachelor Total', 'Masters Total', 'PhD Total', 'Elementary Total', 'SPED Total',
                         'STEM Total', 'Other Total']
 
 # Organize where items will be on the page
@@ -77,58 +77,62 @@ def update_time_series(state_id, indicator_ids):
     lines = {}
     data = []
     for indicator_id in indicator_ids:
-        if indicator_id == 'Bachelor Total':
+        if indicator_id=='Bachelor Total':  
             lines = dict(
-                color=("#6b6ecf"),
-                width=3,
-                dash='dash')
-        if indicator_id == 'Masters Total':
+                 color = ("#6b6ecf"),
+                 width = 3,
+                 dash = 'dash')
+        if indicator_id=='Masters Total':           
             lines = dict(
-                color=("#80b1d3"),
-                width=3,
-                dash='dash')
-        if indicator_id == 'State Total':
-            lines = dict(
-                color=("#333333"),
-                width=3)
-        if indicator_id == 'PhD Total':
-            lines = dict(
-                color=("#35B778"),
-                width=3,
-                dash='dash')
-        if indicator_id == 'SPED Total':
-            lines = dict(
-                color=("#fdb462"),
-                width=3,
-                dash='dot')
-        if indicator_id == 'Elementary Total':
-            lines = dict(
-                color=("#bebada"),
-                width=3,
-                dash='dot')
-        if indicator_id == 'Other Total':
-            lines = dict(
-                color=("#fb8072"),
-                width=3,
-                dash='dot')
-        if indicator_id == 'STEM Total':
-            lines = dict(
-                color=("#8dd3c7"),
-                width=3,
-                dash='dot')
+                 color = ("#80b1d3"),
+                 width = 3,
+                 dash = 'dash')
+        if indicator_id=='State Total':           
+                lines = dict(
+                     color = ("#333333"),
+                     width = 3)
+        if indicator_id=='PhD Total':           
+                lines = dict(
+                     color = ("#35B778"),
+                     width = 3,
+                     dash = 'dash') 
+        if indicator_id=='SPED Total':           
+                lines = dict(
+                     color = ("#fdb462"),
+                     width = 3,
+                     dash = 'dot')
+        if indicator_id=='Elementary Total':           
+                lines = dict(
+                     color = ("#bebada"),
+                     width = 3,
+                     dash = 'dot')
+        if indicator_id=='Other Total':           
+                lines = dict(
+                     color = ("#fb8072"),
+                     width = 3,
+                     dash = 'dot')
+        if indicator_id=='STEM Total':           
+                lines = dict(
+                     color = ("#8dd3c7"),
+                     width = 3,
+                     dash = 'dot') 
+        if indicator_id=='National Total':           
+                lines = dict(
+                     color = ("#8c8c8c"),
+                     width = 3)
         trace = go.Scatter(
-            x=dff[dff['indicator'] == indicator_id]['year'],
-            y=dff[dff['indicator'] == indicator_id]['value'],
+            x = dff[dff['indicator'] == indicator_id]['year'],
+            y = dff[dff['indicator'] == indicator_id]['value'],
             mode='lines',
-            name=indicator_id,
-            line=lines,
-            opacity=0.8
-        )
-
+            name = indicator_id,
+            line = lines,
+            opacity = 0.8
+            )
+        
         data.append(trace)
     return {
-        'data': data,
-        'layout': go.Layout(
+        'data' : data,
+        'layout' : go.Layout(
             xaxis={'title': 'Year'},
             yaxis={'title': 'Total Graduates in Education'}
         )
