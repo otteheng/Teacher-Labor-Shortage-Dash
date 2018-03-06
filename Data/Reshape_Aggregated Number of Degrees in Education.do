@@ -68,4 +68,4 @@ restore
 		
 		
 
-export excel using "$excel\Aggregated Number of Degrees in Education (Reshaped long long) (Add National).xlsx", firstrow(variables) replace	
+export delimited using "$excel\Aggregated Number of Degrees in Education (Reshaped long long) (Add National).csv", replace
