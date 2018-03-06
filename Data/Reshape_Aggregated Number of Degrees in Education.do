@@ -1,11 +1,39 @@
 * Gerhard O
 *2/2/2018
-* Reshape data long
+*1. Add national data by year, award and degree type
+*2. Reshape data long and then long again
+
+********************************************************************************
+********************************************************************************
 
 global excel "H:\CALDER\CALDER Data Visualizations\Data\Teacher Labor Shortage"
+global national "H:\Teacher Labor MRKT Shortage\IPEDS\Completions_CIP codes\New CIP data\Data files used for graphs"
+
 import excel "$excel\Aggregated Number of Degrees in Education.xlsx", sheet("Sheet1") firstrow clear
 
-//1: Reshape long. Will need to reshape again. 
+//1: Create a national data set (Will not match national data in plotly data viz
+//	since this will not include Puerto Rico or other territories.
+
+preserve
+	
+	*A. Collapse data by year
+		collapse (rawsum) statetotal ba_total ma_total phd_total sped_total ///
+			stem_total elem_total other_total, by(year)
+			
+	*B. Create variable to indicate that this is the national data
+		gen state = "NAT"
+		gen statename = "National"
+		
+	*C. Create Temp file
+		tempfile national
+		save "`national'"
+		
+restore
+
+	*D. Append to current data set
+		append using "`national'"
+
+//2: Reshape long. Will need to reshape again. 
 
 	*A. Prepare for reshape
 		drop A
@@ -18,7 +46,7 @@ import excel "$excel\Aggregated Number of Degrees in Education.xlsx", sheet("She
 		reshape long stem sped elem other agg ba ma phd state, ///
 			i(year shortname longname) j(x) string
 			
-//1.2: Reshape long again. 
+//2.2: Reshape long again. 
 
 	*A. Prepare for second reshape
 		replace x = subinstr(x, "_" , "", .)
@@ -38,5 +66,6 @@ import excel "$excel\Aggregated Number of Degrees in Education.xlsx", sheet("She
 		ren longname state_long
 		order year state_short state_long indicator value
 		
+		
 
-export excel using "$excel\Aggregated Number of Degrees in Education (Reshaped long long).xlsx", firstrow(variables) replace	
+export excel using "$excel\Aggregated Number of Degrees in Education (Reshaped long long) (Add National).xlsx", firstrow(variables) replace	
