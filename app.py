@@ -11,7 +11,7 @@ import os
 from random import randint
 
 # Saved on Github
-excel = pd.read_excel('https://github.com/otteheng/Teacher-Labor-Shortage-Dash/blob/master/Data/Aggregated%20Number%20of%20Degrees%20in%20Education%20(Reshaped%20long%20long)%20(Renamed).xlsx?raw=true')
+excel = pd.read_csv('https://github.com/otteheng/Teacher-Labor-Shortage-Dash/raw/master/Data/Aggregated%20Number%20of%20Degrees%20in%20Education%20(Reshaped%20long%20long)%20(Add%20National)%20(Renamed).csv')
 
 
 # Setup the app
