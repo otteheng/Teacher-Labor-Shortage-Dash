@@ -25,46 +25,57 @@ app.css.append_css({"external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
 
 df = excel
 
-state = df['state_long'].unique()
-available_indicators = ['National Total', 'State Total', 'Bachelor Total', 'Masters Total', 'PhD Total', 'Elementary Total', 'SPED Total',
+# Move "National Total" to be the first item in the "State" drop down (Left hand side)
+state = list(df['state_long'].unique())
+state.remove('National Total')
+state.insert(0, 'National Total')
+
+# Items in second drop down (Right hand side)
+available_indicators = ['State Total', 'Bachelor Total', 'Masters Total', 'PhD Total', 'Elementary Total', 'SPED Total', 
                         'STEM Total', 'Other Total']
 
 # Organize where items will be on the page
 app.layout = html.Div([
-    html.H3(
-        children='Aggregated Number of Graduates in Education by State',
-        style={
-            'textAlign': 'center', 'fontFamily': 'Georgia'
-        }
-    ),
-
-    html.Div([
+        html.H3(
+            children='Aggregated Number of Graduates in Education by State',
+            style={'textAlign': 'center', 'fontFamily' : 'Georgia'}
+        ),
+        
+        html.Div([          
+            html.Div([
+                html.Div([html.P('Select a State from the drop down below',id='state-title')],
+                    style={'textAlign': 'center', 'fontFamily': 'Georgia'}),
+                dcc.Dropdown(
+                    id='state-id',
+                    options=[{'label': i, 'value': i} for i in state],
+                    value = 'Alaska'
+                )
+            ],
+            style={'width': '48%', 'display': 'inline-block', 'fontFamily' : 'Georgia'}),
+            
         html.Div([
-            html.Div([html.P('Select a State from the drop down below', id='state-title')],
-                     style={'textAlign': 'center', 'fontFamily': 'Georgia'}),
-            dcc.Dropdown(
-                id='state-id',
-                options=[{'label': i, 'value': i} for i in state],
-                value='Alaska'
-            )
-        ],
-            style={'width': '48%', 'display': 'inline-block'}),
-
-        html.Div([
-            html.Div([html.P('Select Totals by broad CIP categories and Award type', id='indicator-title')],
-                     style={'textAlign': 'center', 'fontFamily': 'Georgia'}),
+            html.Div([html.P('Select Totals by broad CIP categories and Award type',id='indicator-title')],
+                style={'textAlign': 'center', 'fontFamily' : 'Georgia'}),
             dcc.Dropdown(
                 id='indicator-id',
-                options=[{'label': i, 'value': i} for i in available_indicators],
+                options=[{'label': i , 'value': i} for i in available_indicators],
                 value=['State Total'],
-                multi=True  # This treats items as a list.
-            )
-        ],
-            style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
-    ]),
-
-    dcc.Graph(id='indicator-graphic')
-])
+                multi=True # This treats items as a list. 
+                )
+            ],
+            style={'width':'48%', 'float': 'right', 'display': 'inline-block', 'fontFamily' : 'Georgia'})
+        ]),
+        
+        dcc.Graph(
+            id='indicator-graphic',
+            config={'modeBarButtonsToRemove': ['sendDataToCloud', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'pan2d', 'zoom2d',
+                                              'resetScale2d'], 
+                   'displaylogo': False}),
+        
+        html.Div([
+            html.P('Note: National Totals do not include US territories.', id='below-graph-text')],
+            style={'textAlign': 'left', 'fontFamily': 'Georgia', 'fontSize': '11'})
+    ])
 
 
 @app.callback(
@@ -116,10 +127,6 @@ def update_time_series(state_id, indicator_ids):
                      color = ("#8dd3c7"),
                      width = 3,
                      dash = 'dot') 
-        if indicator_id=='National Total':           
-                lines = dict(
-                     color = ("#8c8c8c"),
-                     width = 3)
         trace = go.Scatter(
             x = dff[dff['indicator'] == indicator_id]['year'],
             y = dff[dff['indicator'] == indicator_id]['value'],
@@ -137,7 +144,6 @@ def update_time_series(state_id, indicator_ids):
             yaxis={'title': 'Total Graduates in Education'}
         )
     }
-
 
 # Run the Dash app
 if __name__ == '__main__':
